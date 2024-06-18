@@ -175,34 +175,105 @@ Please use this concept responsibly and ethically, and respect the rights and pr
     
     </section>
 
-    <!--    will be used later
+  
     <section>
-      <h2>Misc</h2>
+      <h2>Pokemon Go</h2>
       <div class="accordion">
-        <button class="accordion-btn">Life Path Number Calculator</button>
+        <button class="accordion-btn">Distance Calculator</button>
         <div class="accordion-content">
-          <p>Life Number  : written with c++
-          </p>
+    <p>Enter the latitude and longitude of two points separated by a comma:</p>
+    <input type="text" id="locationInput" placeholder="First point: latitude, longitude">
+    <input type="text" id="locationInput2" placeholder="Second point: latitude, longitude">
+    <button onclick="calculateDistance()">Calculate Distance</button>
+    <p id="result"></p>
+    <p id="waitTime"></p>
+    </div>
+    <script>
+    function calculateDistance() {
+    const location1 = document.getElementById("locationInput").value.split(",");
+    const location2 = document.getElementById("locationInput2").value.split(",");
+    // Check if input boxes are empty
+    if (location1.length < 2 || location2.length < 2) {
+    return;
+    }
+    const lat1 = parseFloat(location1[0]) * (Math.PI / 180);
+    const lon1 = parseFloat(location1[1]) * (Math.PI / 180);
+    const lat2 = parseFloat(location2[0]) * (Math.PI / 180);
+    const lon2 = parseFloat(location2[1]) * (Math.PI / 180);
+    const R = 3959; // Radius of the Earth in miles
+    const dLat = lat2 - lat1;
+    const dLon = lon2 - lon1;
+    const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(lat1) * Math.cos(lat2) *
+    Math.sin(dLon / 2) * Math.sin(dLon / 2)
+    ;
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const distance = R * c; // Distance in miles
+    const resultElement = document.getElementById("result");
+    resultElement.innerHTML = `The distance between the two points is ${distance.toFixed(2)} miles`;
+    let waitTime = 0;
+    if (distance <= 1) {
+    waitTime = 30;
+    } else if (distance <= 5) {
+    waitTime = 2.5 * 60;
+    } else if (distance <= 10) {
+    waitTime = 7 * 60;
+    } else if (distance <= 12) {
+    waitTime = 8 * 60;
+    } else if (distance <= 18) {
+    waitTime = 10 * 60;
+    } else if (distance <= 26) {
+    waitTime = 15 * 60;
+    } else if (distance <= 42) {
+    waitTime = 19 * 60;
+    } else if (distance <= 65) {
+    waitTime = 22 * 60;
+    } else if (distance <= 81) {
+    waitTime = 25 * 60;
+    } else if (distance <= 100) {
+    waitTime = 35 * 60;
+    } else if (distance <= 250) {
+    waitTime = 45 * 60;
+    } else if (distance <= 375) {
+    waitTime = 54 * 60;
+    } else if (distance <= 460) {
+    waitTime = 62 * 60;
+    } else if (distance <= 565) {
+    waitTime = 69 * 60;
+    } else if (distance <= 700) {
+    waitTime = 78 * 60;
+    } else if (distance <= 800) {
+    waitTime = 84 * 60;
+    } else if (distance <= 900) {
+    waitTime = 92 * 60;
+    } else if (distance <= 1000) {
+    waitTime = 99 * 60;
+    } else if (distance <= 1300) {
+    waitTime = 117 * 60;
+    } else if (distance <= 1500) {
+    waitTime = 2 * 60 * 60;
+    } else {
+    waitTime = 2 * 60 * 60; // if distance is greater than 1500km, set wait time to 2 hours
+    }
+    const waitTimeInSeconds = Math.floor(waitTime);
+    const waitTimeInMinutes = Math.floor(waitTime / 60);
+    const waitTimeInHours = Math.floor(waitTime / 3600);
+    const remainingSeconds = waitTimeInSeconds % 60;
+    const remainingMinutes = waitTimeInMinutes % 60;
+    let waitTimeElement = document.getElementById("waitTime");
+    if (waitTime <= 60) {
+    waitTimeElement.innerHTML = `Wait time: ${waitTimeInSeconds} seconds`;
+    } else if (waitTime <= 3600) {
+    waitTimeElement.innerHTML = `Wait time: ${waitTimeInMinutes} minutes ${remainingSeconds} seconds`;
+    } else {
+    waitTimeElement.innerHTML = `Wait time: ${waitTimeInHours} hours ${remainingMinutes} minutes ${remainingSeconds} seconds`;
+    }
+    }
+    </script>
         </div>
-        <button class="accordion-btn">ios</button>
-        <div class="accordion-content">
-          <p>Zeppling Logos : megalink <br>
-            IAP Store : megalink
-          </p>
-        </div>
-        <button class="accordion-btn">Websites</button>
-          <div class="accordion-content">
-            <p>Natalies Project <br>
-               Barrcaks Website <br>
-               DCUO ungreatful league website
-            </p>
-          </div>
-          <button class="accordion-btn">PC Mods</button>
-          <div class="accordion-content">
-            <p>Lethal Company infinite money</p>
-          </div>
     </section>
-  -->
+
   </main>
   <script src="script.js"></script>
   <footer>
