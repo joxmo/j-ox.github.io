@@ -3,6 +3,12 @@
     padding: 0;
     box-sizing: border-box;
   }
+  link[href="pp/jox.jpg"] {
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+  }
   
   body {
     font-family: 'Matrix Code NFI', monospace;
