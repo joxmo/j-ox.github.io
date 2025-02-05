@@ -311,6 +311,54 @@ Please use this concept responsibly and ethically, and respect the rights and pr
 
         </div>
     </section>
+
+    <!--EPU Gen-->
+    <section>
+      <h2>EPU generator</h2>
+      <div class="accordion">
+        <button class="accordion-btn">Email - Password - Username Generator</button>
+        <div class="accordion-content">
+          <form>
+            <button id="generate" type="button">Generate User</button>
+            <div id="output"></div>
+          </form>
+        </div>
+      
+        <script>
+          const generateButton = document.getElementById('generate');
+          const outputDiv = document.getElementById('output');
+      
+          generateButton.addEventListener('click', async () => {
+            const response = await fetch('https://randomuser.me/api');
+            const data = await response.json();
+            const username = data.results[0].login.username;
+            const domain = getRandomDomain();
+            const email = `${username}@${domain}`;
+            const password = generateRandomString(12);
+            outputDiv.innerHTML = `
+              <p>Username: ${username}</p>
+              <p>Email: ${email}</p>
+              <p>Password: ${password}</p>
+            `;
+          });
+      
+          function generateRandomString(length) {
+            const characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let result = '';
+            for (let i = 0; i < length; i++) {
+              result += characters.charAt(Math.floor(Math.random() * characters.length));
+            }
+            return result;
+          }
+      
+          function getRandomDomain() {
+            const domains = ['gmail.com', 'outlook.com', 'yahoo.com', 'protonmail.com', 'icloud.com', 'me.com'];
+            return domains[Math.floor(Math.random() * domains.length)];
+          }
+        </script>
+        </div>
+    </section>
+
   </main>
   <script src="script.js"></script>
   <footer>
