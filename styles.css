@@ -247,3 +247,9 @@
   input[type="submit"]:hover {
     background-color: #45a049;
   }
+
+  #map {
+    height: 400px;
+    width: 600px;
+    border: 1px solid black;
+}

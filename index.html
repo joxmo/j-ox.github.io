@@ -4,6 +4,13 @@
   <title>Jox</title>
   <link rel="stylesheet" href="styles.css">
   <link rel="icon" type="image/x-icon" href="pp/jox.jpg" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.2/dist/leaflet.css"
+  integrity="sha256-sA+zWATbFveLLNqWO2gtiw3HL/lh1giY/Inf1BJ0z14="
+  crossorigin=""/>
+<script src="https://unpkg.com/leaflet@1.9.2/dist/leaflet.js"
+    integrity="sha256-o9N1jGDZrf5tS+Ft4gbIK7mYMipq9lqpVJ91xHSyKhg="
+    crossorigin=""></script>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
 </head>
 <body>
   <header>
@@ -175,96 +182,133 @@ Please use this concept responsibly and ethically, and respect the rights and pr
       <div class="accordion">
         <button class="accordion-btn">Distance Calculator</button>
         <div class="accordion-content">
-    <p>Enter the latitude and longitude of two points separated by a comma:</p>
-    <input type="text" id="locationInput" placeholder="First point: latitude, longitude">
-    <input type="text" id="locationInput2" placeholder="Second point: latitude, longitude">
-    <button onclick="calculateDistance()">Calculate Distance</button>
-    <p id="result"></p>
-    <p id="waitTime"></p>
-    </div>
-    <script>
-    function calculateDistance() {
-    const location1 = document.getElementById("locationInput").value.split(",");
-    const location2 = document.getElementById("locationInput2").value.split(",");
-    // Check if input boxes are empty
-    if (location1.length < 2 || location2.length < 2) {
-    return;
-    }
-    const lat1 = parseFloat(location1[0]) * (Math.PI / 180);
-    const lon1 = parseFloat(location1[1]) * (Math.PI / 180);
-    const lat2 = parseFloat(location2[0]) * (Math.PI / 180);
-    const lon2 = parseFloat(location2[1]) * (Math.PI / 180);
-    const R = 3959; // Radius of the Earth in miles
-    const dLat = lat2 - lat1;
-    const dLon = lon2 - lon1;
-    const a =
-    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos(lat1) * Math.cos(lat2) *
-    Math.sin(dLon / 2) * Math.sin(dLon / 2)
-    ;
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    const distance = R * c; // Distance in miles
-    const resultElement = document.getElementById("result");
-    resultElement.innerHTML = `The distance between the two points is ${distance.toFixed(2)} miles`;
-    let waitTime = 0;
-    if (distance <= 1) {
-    waitTime = 30;
-    } else if (distance <= 5) {
-    waitTime = 2.5 * 60;
-    } else if (distance <= 10) {
-    waitTime = 7 * 60;
-    } else if (distance <= 12) {
-    waitTime = 8 * 60;
-    } else if (distance <= 18) {
-    waitTime = 10 * 60;
-    } else if (distance <= 26) {
-    waitTime = 15 * 60;
-    } else if (distance <= 42) {
-    waitTime = 19 * 60;
-    } else if (distance <= 65) {
-    waitTime = 22 * 60;
-    } else if (distance <= 81) {
-    waitTime = 25 * 60;
-    } else if (distance <= 100) {
-    waitTime = 35 * 60;
-    } else if (distance <= 250) {
-    waitTime = 45 * 60;
-    } else if (distance <= 375) {
-    waitTime = 54 * 60;
-    } else if (distance <= 460) {
-    waitTime = 62 * 60;
-    } else if (distance <= 565) {
-    waitTime = 69 * 60;
-    } else if (distance <= 700) {
-    waitTime = 78 * 60;
-    } else if (distance <= 800) {
-    waitTime = 84 * 60;
-    } else if (distance <= 900) {
-    waitTime = 92 * 60;
-    } else if (distance <= 1000) {
-    waitTime = 99 * 60;
-    } else if (distance <= 1300) {
-    waitTime = 117 * 60;
-    } else if (distance <= 1500) {
-    waitTime = 2 * 60 * 60;
-    } else {
-    waitTime = 2 * 60 * 60; // if distance is greater than 1500km, set wait time to 2 hours
-    }
-    const waitTimeInSeconds = Math.floor(waitTime);
-    const waitTimeInMinutes = Math.floor(waitTime / 60);
-    const waitTimeInHours = Math.floor(waitTime / 3600);
-    const remainingSeconds = waitTimeInSeconds % 60;
-    const remainingMinutes = waitTimeInMinutes % 60;
-    let waitTimeElement = document.getElementById("waitTime");
-    if (waitTime <= 60) {
-    waitTimeElement.innerHTML = `Wait time: ${waitTimeInSeconds} seconds`;
-    } else if (waitTime <= 3600) {
-    waitTimeElement.innerHTML = `Wait time: ${waitTimeInMinutes} minutes ${remainingSeconds} seconds`;
-    } else {
-    waitTimeElement.innerHTML = `Wait time: ${waitTimeInHours} hours ${remainingMinutes} minutes ${remainingSeconds} seconds`;
-    }
-    }
-    </script>
+          <div id="app">
+            <input type="text" id="locationInput" placeholder="First point: latitude, longitude" v-model="point1">
+            <input type="text" id="locationInput2" placeholder="Second point: latitude, longitude" v-model="point2">
+            <button @click="calculateDistance()">Calculate Distance</button>
+            <p id="result">{{ result }}</p>
+            <p id="waitTime">{{ waitTime }}</p>
+            <div id="map"></div>
+        </div>
+        <script>
+            new Vue({
+                el: '#app',
+                data: {
+                    point1: '',
+                    point2: '',
+                    result: '',
+                    waitTime: '',
+                    map: null,
+                    marker1: null,
+                    marker2: null,
+                    polyline: null
+                },
+                methods: {
+                    calculateDistance() {
+                        const location1 = this.point1.split(",");
+                        const location2 = this.point2.split(",");
+                        const lat1 = parseFloat(location1[0]);
+                        const lon1 = parseFloat(location1[1]);
+                        const lat2 = parseFloat(location2[0]);
+                        const lon2 = parseFloat(location2[1]);
+                        const R = 3959;
+                        const dLat = lat2 - lat1;
+                        const dLon = lon2 - lon1;
+                        const a =
+                            Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                            Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                            Math.sin(dLon / 2) * Math.sin(dLon / 2)
+                        ;
+                        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+                        const distance = R * c;
+                        this.result = `The distance between the two points is ${distance.toFixed(2)} miles`;
+                        let waitTime = 0;
+                        if (distance <= 1) {
+                            waitTime = 30;
+                        } else if (distance <= 5) {
+                            waitTime = 2.5 * 60;
+                        } else if (distance <= 10) {
+                            waitTime = 7 * 60;
+                        } else if (distance <= 12) {
+                            waitTime = 8 * 60;
+                        } else if (distance <= 18) {
+                            waitTime = 10 * 60;
+                        } else if (distance <= 26) {
+                            waitTime = 15 * 60;
+                        } else if (distance <= 42) {
+                            waitTime = 19 * 60;
+                        } else if (distance <= 65) {
+                            waitTime = 22 * 60;
+                        } else if (distance <= 81) {
+                            waitTime = 25 * 60;
+                        } else if (distance <= 100) {
+                            waitTime = 35 * 60;
+                        } else if (distance <= 250) {
+                            waitTime = 45 * 60;
+                        } else if (distance <= 375) {
+                            waitTime = 54 * 60;
+                        } else if (distance <= 460) {
+                            waitTime = 62 * 60;
+                        } else if (distance <= 565) {
+                            waitTime = 69 * 60;
+                        } else if (distance <= 700) {
+                            waitTime = 78 * 60;
+                        } else if (distance <= 800) {
+                            waitTime = 84 * 60;
+                        } else if (distance <= 900) {
+                            waitTime = 92 * 60;
+                        } else if (distance <= 1000) {
+                            waitTime = 99 * 60;
+                        } else if (distance <= 1300) {
+                            waitTime = 117 * 60;
+                        } else if (distance <= 1500) {
+                            waitTime = 2 * 60 * 60;
+                        } else {
+                            waitTime = 2 * 60 * 60;
+                        }
+                        const waitTimeInSeconds = Math.floor(waitTime);
+                        const waitTimeInMinutes = Math.floor(waitTime / 60);
+                        const waitTimeInHours = Math.floor(waitTime / 3600);
+                        const remainingSeconds = waitTimeInSeconds % 60;
+                        const remainingMinutes = waitTimeInMinutes % 60;
+                        if (waitTime <= 60) {
+                            this.waitTime = `Wait time: ${waitTimeInSeconds} seconds`;
+                        } else if (waitTime <= 3600) {
+                            this.waitTime = `Wait time: ${waitTimeInMinutes} minutes ${remainingSeconds} seconds`;
+                        } else {
+                            this.waitTime = `Wait time: ${waitTimeInHours} hours ${remainingMinutes} minutes ${remainingSeconds} seconds`;
+                        }
+                        if (this.marker1) {
+                            this.map.removeLayer(this.marker1);
+                        }
+                        if (this.marker2) {
+                            this.map.removeLayer(this.marker2);
+                        }
+                        if (this.polyline) {
+                            this.map.removeLayer(this.polyline);
+                        }
+                        this.map.setView([lat1, lon1], 13);
+                        this.marker1 = L.marker([lat1, lon1]).addTo(this.map);
+                        this.marker2 = L.marker([lat2, lon2]).addTo(this.map);
+                        this.polyline = L.polyline([[lat1, lon1], [lat2, lon2]], {
+                            color: 'red'
+                        }).addTo(this.map);
+                    },
+                    initMap() {
+                        this.map = L.map('map').setView([40.7128, -74.0060], 13);
+                        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                            attribution: '&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a>',
+                            subdomains: ['a', 'b', 'c']
+                        }).addTo(this.map);
+                    }
+                },
+                mounted() {
+                    this.initMap();
+                }
+            })
+        </script>
+
+
         </div>
     </section>
   </main>
